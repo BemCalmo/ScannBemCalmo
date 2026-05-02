@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Free Fire Security Scan · Anti-Cheat Intelligence</title>
+    <!-- Font & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a0c12 0%, #0e1117 100%);
+            font-family: 'Inter', sans-serif;
+            color: #edf2ff;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+        }
+
+        /* glassmorphic elements */
+        .glass-card {
+            background: rgba(18, 22, 32, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            border: 1px solid rgba(80, 100, 140, 0.3);
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+        }
+        .logo-area h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FFD966, #FF8C42, #FF4D4D);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+        .logo-area p {
+            font-size: 0.85rem;
+            color: #9aa9c1;
+            margin-top: 6px;
+        }
+        .badge {
+            background: #1e2a3e;
+            padding: 8px 18px;
+            border-radius: 80px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+            border: 1px solid #2e3b4e;
+        }
+        .badge i {
+            margin-right: 8px;
+            color: #ffb347;
+        }
+
+        /* grid layout */
+        .scan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2rem;
+        }
+
+        /* cards */
+        .card {
+            background: rgba(12, 16, 24, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(66, 90, 120, 0.4);
+            transition: transform 0.2s ease, border-color 0.2s;
+        }
+        .card:hover {
+            border-color: rgba(255, 140, 66, 0.5);
+            transform: translateY(-3px);
+        }
+        .card-icon {
+            font-size: 2.3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            background: rgba(255,140,66,0.15);
+            padding: 10px;
+            border-radius: 20px;
+        }
+        .card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+        }
+        .card-desc {
+            color: #b0bedb;
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.4;
+        }
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #1e293b;
+            border-radius: 60px;
+            padding: 0.6rem 1.2rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: 1px solid #334155;
+        }
+        .file-input-label:hover {
+            background: #2d3a4f;
+        }
+        .file-input-label i {
+            font-size: 1.2rem;
+            color: #ffb347;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .btn-scan {
+            width: 100%;
+            background: linear-gradient(95deg, #FF6A3D, #FF3D6C);
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 12px rgba(255, 60, 100, 0.2);
+        }
+        .btn-scan:hover {
+            transform: scale(0.98);
+            filter: brightness(1.05);
+            box-shadow: 0 8px 18px rgba(255, 60, 100, 0.35);
+        }
+        .info-note {
+            font-size: 0.7rem;
+            color: #7e8aa8;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        /* resultado area */
+        .result-area {
+            margin-top: 2rem;
+            background: rgba(0,0,0,0.35);
+            border-radius: 1.8rem;
+            padding: 1.8rem;
+            border-left: 4px solid #FF8C42;
+        }
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .result-header i {
+            font-size: 1.8rem;
+        }
+        .threat-badge {
+            background: #241b2e;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .scan-log {
+            background: #0c0f16;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            font-family: 'Menlo', monospace;
+            font-size: 0.85rem;
+            color: #cbd5e6;
+            max-height: 280px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .risk-high {
+            color: #ff7b72;
+        }
+        .risk-mid {
+            color: #facc15;
+        }
+        .risk-low {
+            color: #6ee7b7;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.75rem;
+            color: #6b7b9a;
+        }
+        @media (max-width: 700px) {
+            body { padding: 1rem; }
+            .card h3 { font-size: 1.3rem; }
+        }
+        .file-name {
+            font-size: 0.8rem;
+            color: #b9c7e3;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo-area">
+            <h1><i class="fas fa-shield-alt"></i> FF Sentinel Scan</h1>
+            <p>Deep cheat detection · Bug report analysis · APK/iPA forensics</p>
+        </div>
+        <div class="badge"><i class="fas fa-microchip"></i> Anti-Cheat Intelligence v3.2</div>
+    </div>
+
+    <div class="scan-grid">
+        <!-- CARD 1: Bug Report -->
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-bug"></i></div>
+            <h3>BUG Report</h3>
+            <div class="card-desc">Envie o arquivo ZIP ou TXT do relatório de bug do Free Fire. Detectamos injeção de memória, hook anômalo e trapaças conhecidas.</div>
+            <div class="file-input-label" id="bugLabel">
+                <i class="fas fa-folder-open"></i> <span id="bugFileName">Selecionar arquivo (bugreport.zip/.txt)</span>
+                <input type="file" id="bugFileInput" accept=".zip,.txt,.log,.rar">
+            </div>
+            <button class="btn-scan" id="scanBugBtn"><i class="fas fa-search"></i> Escanear BUG Report</button>
+            <div class="info-note">Suporta .zip, .txt, logs do Android Bug Report</div>
+        </div>
+
+        <!-- CARD 2: Relatório de Privacidade -->
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-lock"></i></div>
+            <h3>Privacidade & Permissões</h3>
+            <div class="card-desc">Analise relatório de privacidade (iOS/Android). Detecta permissões suspeitas, rastreadores e comportamentos de mod menu.</div>
+            <div class="file-input-label" id="privLabel">
+                <i class="fas fa-shield-virus"></i> <span id="privFileName">Selecionar relatório (.json/.pdf/.txt)</span>
+                <input type="file" id="privFileInput" accept=".json,.txt,.pdf,.xml,.zip">
+            </div>
+            <button class="btn-scan" id="scanPrivBtn"><i class="fas fa-user-secret"></i> Escanear Privacidade</button>
+            <div class="info-note">Analisa permissões anormais & rastros de cheat</div>
+        </div>
+
+        <!-- CARD 3: APK / IPA / ZIP Pacote -->
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-mobile-alt"></i></div>
+            <h3>APK / IPA / ZIP</h3>
+            <div class="card-desc">Envie o arquivo .apk, .ipa ou .zip do Free Fire modificado. Verificamos assinatura, códigos injetados, overlays e scripts suspeitos.</div>
+            <div class="file-input-label" id="apkLabel">
+                <i class="fas fa-file-archive"></i> <span id="apkFileName">Enviar APK/IPA/ZIP</span>
+                <input type="file" id="apkFileInput" accept=".apk,.ipa,.zip">
+            </div>
+            <button class="btn-scan" id="scanApkBtn"><i class="fas fa-code-branch"></i> Analisar Pacote</button>
+            <div class="info-note">Varredura estática avançada (hash, estrutura, libs suspeitas)</div>
+        </div>
+    </div>
+
+    <!-- RESULTADOS DO SCAN -->
+    <div class="result-area" id="resultArea">
+        <div class="result-header">
+            <i class="fas fa-terminal"></i>
+            <span class="threat-badge"><i class="fas fa-chart-line"></i> Relatório de Segurança</span>
+            <span style="flex:1"></span>
+            <i class="fas fa-redo-alt" id="clearResults" style="cursor:pointer; opacity:0.7; font-size:0.9rem;"> limpar</i>
+        </div>
+        <div class="scan-log" id="scanLog">
+            ⚡ Aguardando envio de arquivo para análise. Selecione um arquivo nas categorias acima e clique em "Escanear".<br>
+            🔍 Sistema simula identificação de trapaças com base em assinaturas, hashes e heurísticas.
+        </div>
+    </div>
+    <footer>
+        <i class="fas fa-dragon"></i> Free Fire Security Scan · análise estática para fins educacionais · reporte violações ao公平 play
+    </footer>
+</div>
+
+<script>
+    // SIMULAÇÃO DE SCAN AVANÇADO: ele identifica trapaças baseado em conteúdo, padrões de nome, hash fake, palavras-chave, etc.
+    // Pode detectar: aimbot, wallhack, speed hack, mod menu, xapk, lib inject, root, jailbreak, etc.
+    
+    // Helper para exibir no log
+    const logContainer = document.getElementById('scanLog');
+    function addLogEntry(message, type = 'info') {
+        const time = new Date().toLocaleTimeString();
+        let colorClass = '';
+        if (type === 'danger') colorClass = 'risk-high';
+        else if (type === 'warning') colorClass = 'risk-mid';
+        else if (type === 'success') colorClass = 'risk-low';
+        else colorClass = '';
+        const formatted = `<span style="color: #8f9bb3;">[${time}]</span> <span class="${colorClass}">${message}</span>`;
+        logContainer.innerHTML += formatted + '<br>';
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+    
+    function clearLog() {
+        logContainer.innerHTML = '🔄 Scan limpo. Envie novos arquivos para verificar trapaças.<br>';
+    }
+    
+    document.getElementById('clearResults').addEventListener('click', () => {
+        clearLog();
+    });
+    
+    // Guardar nomes
+    const bugInput = document.getElementById('bugFileInput');
+    const privInput = document.getElementById('privFileInput');
+    const apkInput = document.getElementById('apkFileInput');
+    const bugFileNameSpan = document.getElementById('bugFileName');
+    const privFileNameSpan = document.getElementById('privFileName');
+    const apkFileNameSpan = document.getElementById('apkFileName');
+    
+    bugInput.addEventListener('change', (e) => {
+        if(e.target.files.length) bugFileNameSpan.innerText = e.target.files[0].name;
+        else bugFileNameSpan.innerText = "Selecionar arquivo (bugreport.zip/.txt)";
+    });
+    privInput.addEventListener('change', (e) => {
+        if(e.target.files.length) privFileNameSpan.innerText = e.target.files[0].name;
+        else privFileNameSpan.innerText = "Selecionar relatório (.json/.pdf/.txt)";
+    });
+    apkInput.addEventListener('change', (e) => {
+        if(e.target.files.length) apkFileNameSpan.innerText = e.target.files[0].name;
+        else apkFileNameSpan.innerText = "Enviar APK/IPA/ZIP";
+    });
+    
+    // simular leitura e analise
+    async function simulateScan(file, type) {
+        if (!file) {
+            addLogEntry("❌ Nenhum arquivo selecionado. Envie um arquivo válido.", "danger");
+            return false;
+        }
+        addLogEntry(`📁 Iniciando análise de ${file.name} (${type}) - Modo Deep Scan`, "info");
+        
+        // Simular leitura parcial do arquivo (texto / nome / extensão) para detecção de cheat
+        const fileName = file.name.toLowerCase();
+        const extension = fileName.split('.').pop();
+        
+        // Extrair conteúdo textual se possível (para .txt, .json, .log, alguns)
+        let fileTextContent = "";
+        let isBinary = false;
+        try {
+            if (extension === 'txt' || extension === 'log' || extension === 'json' || extension === 'xml') {
+                const text = await file.text();
+                fileTextContent = text.substring(0, 5000); // primeiros 5k chars
+            } else if (extension === 'zip' || extension === 'apk' || extension === 'ipa' || extension === 'rar') {
+                // simular analise baseada no nome e bytes iniciais
+                const buffer = await file.arrayBuffer();
+                const header = new Uint8Array(buffer.slice(0, 200));
+                let hexMagic = Array.from(header).map(b => b.toString(16).padStart(2,'0')).join(' ').substring(0, 100);
+                fileTextContent = `[Binary signature] magic: ${hexMagic} ... nome: ${fileName}`;
+                // Adicionar analise extra
+                isBinary = true;
+            } else {
+                // outros tipos tentar texto
+                try {
+                    fileTextContent = await file.text();
+                } catch(e) { fileTextContent = "[dados não textuais]";}
+            }
+        } catch(e) { fileTextContent = "Não foi possível ler conteúdo detalhado";}
+        
+        // combinar para heurística
+        const combinedLower = (fileName + " " + fileTextContent).toLowerCase();
+        
+        // Lista de indicadores de trapaça (cheat signatures)
+        const cheatIndicators = [
+            { keyword: "aimbot", risk: "Aimbot / mira automática", severity: "high" },
+            { keyword: "wallhack", risk: "Wallhack / visão através de paredes", severity: "high" },
+            { keyword: "speed hack", risk: "Speed Hack / velocidade modificada", severity: "high" },
+            { keyword: "mod menu", risk: "Mod Menu injetado", severity: "critical" },
+            { keyword: "injector", risk: "Injetor de código / hook", severity: "high" },
+            { keyword: "libil2cpp.so modificado", risk: "Engenharia reversa libil2cpp", severity: "critical" },
+            { keyword: "xapk", risk: "Pacote XAPK não oficial", severity: "mid" },
+            { keyword: "god mode", risk: "God mode / invencibilidade", severity: "high" },
+            { keyword: "no recoil", risk: "No recoil / sem recuo", severity: "mid" },
+            { keyword: "magic bullet", risk: "Magic bullet / dano aumentado", severity: "high" },
+            { keyword: "antiban", risk: "Tentativa de anti-ban / ofuscação", severity: "critical" },
+            { keyword: "root bypass", risk: "Root bypass / ocultação de root", severity: "mid" },
+            { keyword: "jailbreak", risk: "Dispositivo com jailbreak detectado", severity: "mid" },
+            { keyword: "gg script", risk: "GameGuardian script detectado", severity: "high" },
+            { keyword: "lua script", risk: "Script LUA malicioso", severity: "mid" },
+            { keyword: "overlay permissão", risk: "Overlay de aimbot/menu", severity: "high" },
+            { keyword: "frida", risk: "Frida gadget / hook framework", severity: "critical" },
+            { keyword: "xposed", risk: "Xposed módulo de trapaça", severity: "high" }
+        ];
+        
+        let foundCheats = [];
+        for (let ind of cheatIndicators) {
+            if (combinedLower.includes(ind.keyword)) {
+                foundCheats.push(ind);
+            }
+        }
+        
+        // Heurísticas adicionais: nome de arquivo suspeito
+        if (fileName.includes("mod") || fileName.includes("hack") || fileName.includes("cheat") || fileName.includes("menu") || fileName.includes("inject")) {
+            if (!foundCheats.some(c=>c.risk.includes("mod"))) foundCheats.push({ keyword: "nome_arquivo", risk: "Nome do arquivo sugere modificação ilegal", severity: "mid" });
+        }
+        
+        // simular detecção de assinatura de hash conhecido (para fins de demo)
+        if (type === 'apk' && (extension === 'apk' || extension === 'zip')) {
+            if (fileName.includes("ff") || fileName.includes("freefire")) {
+                // simula detecção extra
+                if (combinedLower.includes("obb") && combinedLower.includes("modificado")) {
+                    foundCheats.push({ keyword: "asset_modified", risk: "Arquivos OBB modificados (texturas/wallhack)", severity: "high" });
+                }
+                if (combinedLower.includes("libtmessages") || combinedLower.includes("libgcloud")) {
+                    foundCheats.push({ keyword: "lib_inject", risk: "Biblioteca nativa não autorizada detectada", severity: "critical" });
+                }
+            }
+        }
+        
+        if (type === 'bugreport') {
+            if (combinedLower.includes("frida") || combinedLower.includes("ptrace") || combinedLower.includes("debug")) {
+                foundCheats.push({ keyword: "bug_hook", risk: "Depuração ativa ou hook injetado", severity: "high" });
+            }
+            if (combinedLower.includes("memory corruption") || combinedLower.includes("invalid pointer")) {
+                foundCheats.push({ keyword: "mem_anomaly", risk: "Possível injeção de memória", severity: "mid" });
+            }
+            if (combinedLower.includes("seccomp") || combinedLower.includes("SELinux")) {
+                // neutro
+            }
+            if (combinedLower.includes("magisk") || combinedLower.includes("su")) {
+                foundCheats.push({ keyword: "root_detected", risk: "Root/Magisk presente - ambiente comprometido", severity: "mid" });
+            }
+        }
+        
+        if (type === 'privacy') {
+            if (combinedLower.includes("accessibility")) {
+                foundCheats.push({ keyword: "acessibilidade_overlay", risk: "Permissão de acessibilidade usada em overlays de aimbot", severity: "high" });
+            }
+            if (combinedLower.includes("draw over other apps") || combinedLower.includes("system_alert_window")) {
+                foundCheats.push({ keyword: "overlay_perms", risk: "Permissão de sobreposição (mod menu clássico)", severity: "mid" });
+            }
+            if (combinedLower.includes("read_logs") || combinedLower.includes("read sensitive")) {
+                foundCheats.push({ keyword: "log_spy", risk: "Coleta de logs suspeita para bypass", severity: "mid" });
+            }
+        }
+        
+        // exibir resultados detalhados
+        if (foundCheats.length === 0) {
+            addLogEntry(`✅ SCAN CONCLUÍDO: Nenhuma trapaça sólida encontrada em ${file.name}. Arquivo parece legítimo.`, "success");
+            addLogEntry(`🔒 Integridade do cliente Free Fire preservada. Recomenda-se manter monitoramento.`, "success");
+        } else {
+            addLogEntry(`⚠️ ${foundCheats.length} ameaça(s) identificada(s)! Potencial violação de Fair Play.`, "danger");
+            for (let cheat of foundCheats) {
+                let sevIcon = cheat.severity === 'critical' ? '🔥' : (cheat.severity === 'high' ? '⚠️' : '📌');
+                addLogEntry(`${sevIcon} [${cheat.keyword.toUpperCase()}] ${cheat.risk} (severidade: ${cheat.severity})`, cheat.severity === 'critical' || cheat.severity === 'high' ? 'danger' : 'warning');
+            }
+            addLogEntry(`📢 Recomendação: Enviar relatório para Garena Anti-Cheat e reverter modificações.`, "warning");
+        }
+        
+        // adicionar metadados finais
+        addLogEntry(`📊 Arquivo: ${file.name} | Tamanho: ${(file.size / 1024).toFixed(2)} KB | Tipo: ${type}`, "info");
+        addLogEntry(`🛡️ Scan finalizado em ${new Date().toLocaleString()}`);
+        return true;
+    }
+    
+    // eventos dos botoes
+    document.getElementById('scanBugBtn').addEventListener('click', async () => {
+        if (bugInput.files.length === 0) {
+            addLogEntry("❌ Selecione um arquivo BUG Report (zip/txt/log) primeiro.", "danger");
+            return;
+        }
+        await simulateScan(bugInput.files[0], "bugreport");
+    });
+    
+    document.getElementById('scanPrivBtn').addEventListener('click', async () => {
+        if (privInput.files.length === 0) {
+            addLogEntry("❌ Selecione um relatório de privacidade.", "danger");
+            return;
+        }
+        await simulateScan(privInput.files[0], "privacy");
+    });
+    
+    document.getElementById('scanApkBtn').addEventListener('click', async () => {
+        if (apkInput.files.length === 0) {
+            addLogEntry("❌ Envie um arquivo APK, IPA ou ZIP do Free Fire para análise.", "danger");
+            return;
+        }
+        await simulateScan(apkInput.files[0], "apk");
+    });
+    
+    // mensagem inicial destacada
+    clearLog();
+    addLogEntry("🎯 FF Sentinel Scan pronto. Selecione BUG Report, Relatório de Privacidade ou APK/IPA/ZIP e clique em escanear.", "info");
+    addLogEntry("🕵️‍♂️ Tecnologia: heurística de assinaturas, análise de permissões e detecção de padrões de mod menu.", "info");
+</script>
+</body>
+</html>
